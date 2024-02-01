@@ -1,7 +1,8 @@
 package config
 
 import (
-	"gorm.io/driver/postgres"
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -15,18 +16,26 @@ const (
 
 
 var (
-	db *gorm.DB
-	logger *Logger
+	db 			*gorm.DB
+	logger 	*Logger
 )
 
-func Init() (*gorm.DB, error) {
-	dsn := "user=seu_usuario password=sua_senha dbname=seu_banco_de_dados sslmode=disable"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+func Init() error {
+	var err error
+
+	// Initialize SqLite
+	db, err = InitializeDB()
+
 	if err != nil {
-		return nil, err
+		return fmt.Errorf("Error initializing SqLite: %v", err)
 	}
-	return db, nil
+	return nil
 }
+
+func GetSqlite() *gorm.DB {
+	return db
+}
+
 
 func GetLogger(p string) *Logger {
 	// Initialize Logger
